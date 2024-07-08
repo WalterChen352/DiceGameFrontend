@@ -1,0 +1,18 @@
+<div>
+    <h1>Lobby</h1>
+    <div *ngIf="!this.inLobby">
+        <form (ngSubmit)="makeGame()">
+            <label>
+                Starting Dice: 
+                <input type ="number" [(ngModel)]="startingDice" name="startingDice" min="1" max="10">
+            </label>
+                <button type ="submit">Make Game</button>
+        </form>
+    </div>
+    <div *ngIf="this.inLobby">
+        <p>Waiting for players...</p>
+        <button (click)="startGame()">Start Game</button>
+    </div>
+
+  </div>
+  
