@@ -1,13 +1,25 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { SocketService } from './socket.service';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'frontend';
+
+  constructor(private socketService: SocketService) {
+    this.socketService.message.subscribe((msg: string) => {
+      console.log(msg);
+    });
+  }
+
+  sendMessage(msg: string) {
+    this.socketService.sendMessage(msg);
+  }
+
+  emit(event: string, msg: string) {
+    this.socketService.emit(event, msg);
+  }
 }

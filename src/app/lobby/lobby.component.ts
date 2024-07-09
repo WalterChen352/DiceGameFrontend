@@ -8,9 +8,7 @@ import { NgIf } from '@angular/common';
 @Component({
   selector: 'app-lobby',
   templateUrl: './lobby.component.html',
-  styleUrls: ['./lobby.component.css'],
-  imports:[FormsModule, NgIf],
-  standalone:true
+  styleUrls: ['./lobby.component.css']
 })
 export class LobbyComponent implements OnInit {
   inLobby= false;
