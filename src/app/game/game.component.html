@@ -1,1 +1,24 @@
-<p>game works!</p>
+<div *ngIf="prevPlayer!==''">
+    <h1>Most Recent Bid</h1>
+    <p>{{prevPlayer}} has bid {{prevQuantity}} {{prevFace}}'s</p>
+</div>
+
+<div *ngIf="this.playerTurn">
+    <h1>It's your turn!</h1>
+    <form (ngSubmit)="submitBid()">
+        <label>
+            Quantity:
+            <input type ="number" min="1" [(ngModel)]="quantity" name="quantity">
+        </label>
+        <label>
+            Face:
+            <input type ="number"  min="1" max="6" [(ngModel)]="face" name="face">
+        </label>
+        <Label>
+            Challenge?
+            <input type="checkbox" name="challenge" [(ngModel)]="challenge">
+        </Label>
+        <button type="submit">Bid</button>
+    </form>
+</div>
+<!-- <app-dice></app-dice> -->

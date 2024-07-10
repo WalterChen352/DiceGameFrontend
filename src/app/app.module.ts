@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { LobbyComponent } from './lobby/lobby.component';
 import { GameComponent } from './game/game.component';
+import { DiceComponent } from './dice/dice.component';
 import { SocketService } from './socket.service';
 
 const config: SocketIoConfig = { url: 'http://127.0.0.1:5000', options: {} };
@@ -24,7 +25,8 @@ const appRoutes: Routes = [
     AppComponent,
     LoginComponent,
     LobbyComponent,
-    GameComponent
+    GameComponent,
+    DiceComponent
   ],
   imports: [
     BrowserModule,

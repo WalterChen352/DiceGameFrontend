@@ -12,8 +12,11 @@ export class SocketService {
   sendMessage(msg: string) {
     this.socket.emit('message', msg);
   }
+  onEvent(event: string, callback: (data: any) => void) {
+    this.socket.on(event, callback);
+  }
 
-  emit(event: string, msg: string) {
+  emit(event: string, msg: any) {
     this.socket.emit(event, msg);
   }
 }

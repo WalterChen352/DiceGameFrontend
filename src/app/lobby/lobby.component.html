@@ -1,6 +1,7 @@
 <div>
     <h1>Lobby</h1>
     <div *ngIf="!this.inLobby">
+        <h2>Make a game</h2>
         <form (ngSubmit)="makeGame()">
             <label>
                 Starting Dice: 
@@ -9,9 +10,24 @@
                 <button type ="submit">Make Game</button>
         </form>
     </div>
+    <div *ngIf="!this.inLobby">
+        <h2>Join a game</h2>
+        <form (ngSubmit)="joinGame()">
+            <label>
+                <input type ="text" [(ngModel)]="gameCode" name = "gameCode">
+            </label>
+                <button type ="submit">Join Game</button>
+        </form>
+    </div>
     <div *ngIf="this.inLobby">
-        <p>Waiting for players...</p>
+        <h1> {{gameCode}}</h1>
+        <p>Waiting for game start...</p>
+        <h3>Players: </h3>
+        <ul>
+            <li *ngFor="let player of players">{{ player }}</li>
+        </ul>
         <button (click)="startGame()">Start Game</button>
+        <button (click)="leaveGame()">Leave Game</button>
     </div>
 
   </div>
