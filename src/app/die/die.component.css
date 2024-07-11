@@ -1,0 +1,15 @@
+div{
+    border: 2px solid black;
+    color: red;
+    height:25px;
+    width:25px;
+    text-align: center
+}
+
+div:hover{
+    background-color: lightblue;
+}
+
+.selected{
+    border:2px solid lightgreen;
+}

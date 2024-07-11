@@ -1,3 +1,4 @@
+<app-msg-box></app-msg-box>
 <div *ngIf="prevPlayer!==''">
     <h1>Most Recent Bid</h1>
     <p>{{prevPlayer}} has bid {{prevQuantity}} {{prevFace}}'s</p>
@@ -14,11 +15,11 @@
             Face:
             <input type ="number"  min="1" max="6" [(ngModel)]="face" name="face">
         </label>
-        <Label>
+        <Label *ngIf="prevPlayer!==''" >
             Challenge?
             <input type="checkbox" name="challenge" [(ngModel)]="challenge">
         </Label>
         <button type="submit">Bid</button>
     </form>
 </div>
-<!-- <app-dice></app-dice> -->
+<app-diceContainer></app-diceContainer>

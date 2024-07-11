@@ -20,10 +20,13 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
       this.socket.onEvent('GetBid', (data)=>{
+        this.face=this.prevFace;
+        this.quantity=this.prevQuantity;
         this.playerTurn=true;
       })
       this.socket.onEvent('BidAcknowledge', ()=>{
         this.playerTurn=false;
+        this.challenge=false;
       })
       this.socket.onEvent('PlayerBid', (data)=>{
         console.log(data)
@@ -31,7 +34,8 @@ export class GameComponent implements OnInit {
         this.prevPlayer=data['prevPlayer']
         this.prevQuantity=data['prevQuantity']
       })
-      this.socket.onEvent('LoseDie', ()=>console.log('losing die'))
+      this.socket.onEvent('LoseDie', ()=>console.log('losing die'));
+      this.socket.onEvent('RoundStart', ()=>this.prevPlayer='');
   }
 
   submitBid():void{

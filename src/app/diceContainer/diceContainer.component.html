@@ -1,0 +1,10 @@
+<h2 *ngIf="this.prompted">{{prompt}}</h2>
+
+<div *ngFor="let die of dice; let i = index" (click)="selectDice(i)">
+  <app-die [faces]="die.faces" [faceIndex]="die.faceIndex"></app-die>
+</div>
+
+<div *ngIf="this.prompted">
+  <button (click)="submitDice()">Submit</button>
+  <button (click)="unselectAllDice()">Clear</button>
+</div>
