@@ -23,7 +23,9 @@ export class DiceContainerComponent implements OnInit {
 
   ngOnInit(): void {
     this.socket.onEvent('DiceRolls', (data) => {
+      console.log(data)
       this.dice = data['dice'];
+      console.log('this is normal container dice', this.dice)
     });
     this.socket.onEvent('LoseDie', (msg)=>{
       this.res='LoseDie'

@@ -8,8 +8,9 @@ import { Component, EventEmitter, Output, Input } from '@angular/core';
 })
 export class DieComponent {
   @Input() faces: string[]=[];
-  @Input() faceIndex: number=0;
+  @Input() faceIndex: number|null= null;
   @Input() selected: boolean=false;
+  hover:boolean=false;
 
   toggleSelect():void{
     this.selected=!this.selected;
@@ -17,5 +18,13 @@ export class DieComponent {
 
   setSelected(selected: boolean): void {
     this.selected = selected;
+  }
+
+  displayFaces():void{
+    this.hover=true;
+  }
+
+  hideFaces():void{
+    this.hover=false;
   }
 }

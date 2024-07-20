@@ -12,6 +12,8 @@ import { DiceContainerComponent } from './diceContainer/diceContainer.component'
 import { SocketService } from './socket.service';
 import { DieComponent } from './die/die.component';
 import { MsgBoxComponent } from './msg-box/msg-box.component';
+import { CarouselComponent } from './carousel/carousel.component';
+import { OppDiceContainerComponent } from './oppDiceContainer/diceContainer.component';
 
 const config: SocketIoConfig = { url: 'http://127.0.0.1:5000', options: {} };
 
@@ -30,7 +32,9 @@ const appRoutes: Routes = [
     GameComponent,
     DiceContainerComponent,
     DieComponent,
-    MsgBoxComponent
+    MsgBoxComponent,
+    CarouselComponent,
+    OppDiceContainerComponent
   ],
   imports: [
     BrowserModule,

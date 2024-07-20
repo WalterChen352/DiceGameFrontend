@@ -1,7 +1,7 @@
 // die.interface.ts
 export interface Die {
     faces: string[];
-    faceIndex: number;
+    faceIndex: number|null;
     selected: boolean;
   }
   
