@@ -38,6 +38,7 @@ export class CarouselComponent implements OnInit {
       this.socket.onEvent('PlayersDiceInfo', (data:OppDiceContainerComponent[])=>
         {
           console.log(data)
+          this.players=[]
           data.forEach(player => {
             let p = new OppDiceContainerComponent(this.socket);
             p.dice = player.dice as Die[]
