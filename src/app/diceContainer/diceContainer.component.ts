@@ -1,4 +1,4 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren, Input } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { SocketService } from '../socket.service';
 import { Router } from '@angular/router';
@@ -11,32 +11,35 @@ import { DieComponent } from '../die/die.component';
   styleUrls: ['./diceContainer.component.css']
 })
 export class DiceContainerComponent implements OnInit {
-  dice: Die[] = [];
-  prompted = false;
-  maxSelections = 0;
-  prompt=''
-  res=''
+  @Input() dice: Die[] = [];
+  @Input() prompted = false;
+  @Input() maxSelections = 0;
+  @Input() prompt=''
+  @Input() res=''
+  @Input() pid: string|null=''
 
   @ViewChildren(DieComponent) dieComponents!: QueryList<DieComponent>;
 
   constructor(private authService: AuthService, private router: Router, private socket: SocketService) {}
 
   ngOnInit(): void {
-    this.socket.onEvent('DiceRolls', (data) => {
-      console.log(data)
-      this.dice = data['dice'];
-      console.log('this is normal container dice', this.dice)
-    });
-    this.socket.onEvent('LoseDie', (msg)=>{
-      this.res='LoseDie'
-      this.prompted=true;
-      this.prompt=msg;
-      this.maxSelections=1;
-    })
-    this.socket.onEvent('LoseDieAck',()=>{
-      this.prompted=false;
-      this.maxSelections=0;
-    })
+    console.log('this is my pid' + this.pid)
+    // console.log(this.dice)
+    // this.socket.onEvent('DiceRolls', (data) => {
+    //   console.log(data)
+    //   this.dice = data['dice'];
+    //   console.log('this is normal container dice', this.dice)
+    // });
+    // this.socket.onEvent('LoseDie', (msg)=>{
+    //   this.res='LoseDie'
+    //   this.prompted=true;
+    //   this.prompt=msg;
+    //   this.maxSelections=1;
+    // })
+    // this.socket.onEvent('LoseDieAck',()=>{
+    //   this.prompted=false;
+    //   this.maxSelections=0;
+    // })
   }
 
   submitDice(): void {

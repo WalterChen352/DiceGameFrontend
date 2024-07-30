@@ -2,7 +2,7 @@
 
 <div class="container">
 <div *ngFor="let die of dice; let i = index" (click)="selectDice(i)">
-  <app-die [faces]="die.faces" [faceIndex]="die.faceIndex"></app-die>
+  <app-die [faces]="die.faces" [faceIndex]="die.faceIndex!==null ? die.faceIndex : null"></app-die>
 </div>
 </div>
 

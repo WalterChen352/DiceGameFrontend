@@ -2,8 +2,8 @@
 <div class="carousel-container">
   <button (click)="prev()">&#10094;</button>
   <div class="carousel">
-      <p>testing div</p>
-      <app-oppDiceContainer [dice]="players[0].dice"></app-oppDiceContainer>
+      <app-oppDiceContainer *ngIf="currPlayer() === false" [dice]="players[currentIndex].dice" [pid]="players[currentIndex].pid"></app-oppDiceContainer>
+      <app-diceContainer *ngIf="currPlayer()=== true" [dice]="players[currentIndex].dice" [prompted]="prompted" [maxSelections]="maxSelections" [prompt] ="prompt" [res]="res" [pid]="user"></app-diceContainer>
   </div>
   <button (click)="next()">&#10095;</button>
 </div>
