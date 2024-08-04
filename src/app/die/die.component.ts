@@ -1,5 +1,6 @@
 // die.component.ts
 import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
+import {Die} from '../interfaces/die.interface'
 
 @Component({
   selector: 'app-die',
@@ -7,14 +8,11 @@ import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
   styleUrls: ['./die.component.css']
 })
 export class DieComponent  implements OnInit{
-  @Input() faces: string[]=[];
-  @Input() faceIndex: number|null= null;
-  @Input() selected: boolean=false;
+  @Input() die:Die ={} as Die;
+  selected: boolean=false;
   hover:boolean=false;
 
   ngOnInit(): void {
-      console.log(this.faceIndex)
-      console.log(this.faceIndex!==null)
   }
 
   toggleSelect():void{

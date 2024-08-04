@@ -13,3 +13,7 @@
 .selected{
     border:2px solid lightgreen;
 }
+
+.faceUpIndex{
+    border-color: gold
+}

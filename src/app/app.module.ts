@@ -14,6 +14,8 @@ import { DieComponent } from './die/die.component';
 import { MsgBoxComponent } from './msg-box/msg-box.component';
 import { CarouselComponent } from './carousel/carousel.component';
 import { OppDiceContainerComponent } from './oppDiceContainer/diceContainer.component';
+import { DiceDraftComponent } from './dice-draft/dice-draft.component';
+import { DraftManagerComponent } from './draft-manager/draft-manager.component';
 
 const config: SocketIoConfig = { url: 'http://127.0.0.1:5000', options: {} };
 
@@ -34,7 +36,9 @@ const appRoutes: Routes = [
     DieComponent,
     MsgBoxComponent,
     CarouselComponent,
-    OppDiceContainerComponent
+    OppDiceContainerComponent,
+    DiceDraftComponent,
+    DraftManagerComponent
   ],
   imports: [
     BrowserModule,
