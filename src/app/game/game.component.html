@@ -3,7 +3,7 @@
     <h1>Most Recent Bid</h1>
     <p>{{prevPlayer}} has bid {{prevQuantity}} {{prevFace}}'s</p>
 </div>
-<app-draft-manager></app-draft-manager>
+<app-draft-manager *ngIf="this.phase==='draft'"></app-draft-manager>
 <div *ngIf="this.playerTurn">
     <h1>It's your turn!</h1>
     <form (ngSubmit)="submitBid()">

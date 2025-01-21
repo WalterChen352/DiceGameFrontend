@@ -1,1 +1,7 @@
-<p>draft-manager works!</p>
+<p *ngIf="PlayerTurn">Your turn to draft</p>
+<div class ="DraftManager">
+    <div *ngFor="let entry of Entries; let i = index" (click)="selectEntry(i)" class="DraftEntry" [ngClass]="{'Drafted': entry.drafted}">
+        <p *ngIf="entry.drafted">Drafted: {{entry.player}}</p>
+        <app-oppDiceContainer [display] = "true" [dice]="entry.dice" [pid]="entry.name"></app-oppDiceContainer>
+    </div>
+</div>

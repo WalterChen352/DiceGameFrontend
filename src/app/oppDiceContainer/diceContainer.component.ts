@@ -13,6 +13,7 @@ import { DieComponent } from '../die/die.component';
 export class OppDiceContainerComponent implements OnInit, OnChanges {
   @Input()dice: Die[] = [];
   @Input()pid: string="";
+  @Input()display:boolean=false;
 
   //@ViewChildren(DieComponent) dieComponents!: QueryList<DieComponent>;
 

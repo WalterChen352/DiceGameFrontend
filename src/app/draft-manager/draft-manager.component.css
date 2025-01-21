@@ -1,0 +1,16 @@
+.DraftManager{
+    display: flex;
+    flex-direction: row;
+}
+
+.DraftEntry{
+    border: 2px solid black;
+}
+
+.Drafted{
+    border:2px solid red;
+}
+
+.DraftEntry .Selected{
+    border: green;
+}

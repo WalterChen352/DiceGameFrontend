@@ -9,13 +9,14 @@ import { Router } from '@angular/router';
   styleUrl: './game.component.css'
 })
 export class GameComponent implements OnInit {
-  face =0;
-  quantity =0;
-  playerTurn=false;
-  prevPlayer='';
-  prevQuantity=0;
-  prevFace=0;
-  challenge =false
+  face :number=0;
+  quantity : number=0;
+  playerTurn: boolean=false;
+  prevPlayer:string='';
+  prevQuantity :number=0;
+  prevFace : number =0;
+  challenge:boolean =false
+  phase:string=''
   constructor(private authService: AuthService, private router: Router, private socket: SocketService) {}
 
   ngOnInit(): void {
@@ -23,19 +24,27 @@ export class GameComponent implements OnInit {
         this.face=this.prevFace;
         this.quantity=this.prevQuantity;
         this.playerTurn=true;
-      })
+      });
       this.socket.onEvent('BidAcknowledge', ()=>{
         this.playerTurn=false;
         this.challenge=false;
-      })
+      });
       this.socket.onEvent('PlayerBid', (data)=>{
         console.log(data)
         this.prevFace=data['prevFace']
         this.prevPlayer=data['prevPlayer']
         this.prevQuantity=data['prevQuantity']
-      })
+      });
       this.socket.onEvent('LoseDie', ()=>console.log('losing die'));
-      this.socket.onEvent('RoundStart', ()=>this.prevPlayer='');
+      this.socket.onEvent('RoundStart', ()=>{
+        this.prevPlayer='';
+        this.phase='bid';
+      });
+
+      this.socket.onEvent('Draft',()=>{
+        console.log('draft start')
+        this.phase='draft'
+      });
   }
 
   submitBid():void{

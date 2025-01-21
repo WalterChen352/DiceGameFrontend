@@ -11,7 +11,7 @@ export class DieComponent  implements OnInit{
   @Input() die:Die ={} as Die;
   selected: boolean=false;
   hover:boolean=false;
-
+  @Input() display:boolean=false;
   ngOnInit(): void {
   }
 
