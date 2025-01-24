@@ -14,7 +14,7 @@
         <h2>Join a game</h2>
         <form (ngSubmit)="joinGame()">
             <label>
-                <input type ="text" [(ngModel)]="gameCode" name = "gameCode">
+                <input type ="text" [(ngModel)]="gameCode" name = "gameCode" autofocus>
             </label>
                 <button type ="submit">Join Game</button>
         </form>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ContentChild,  AfterViewChecked } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { FormsModule } from '@angular/forms';
@@ -11,18 +11,22 @@ import { SocketService } from '../socket.service';
   templateUrl: './lobby.component.html',
   styleUrls: ['./lobby.component.css']
 })
-export class LobbyComponent implements OnInit {
+export class LobbyComponent implements OnInit{
   inLobby= false;
   startingDice=6;
   gameCode='';
   players=[]
+
   constructor(private authService: AuthService, private router: Router, private socket: SocketService) {}
+
 
   ngOnInit(): void {
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);
     }
     else{
+      
+
       this.socket.onEvent('joinGame', (response)=>{
         console.log(response)
         this.gameCode=response

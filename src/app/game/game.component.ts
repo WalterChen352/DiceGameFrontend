@@ -20,6 +20,16 @@ export class GameComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router, private socket: SocketService) {}
 
   ngOnInit(): void {
+      const uid = localStorage.getItem('user')
+      //send ping to server to ask if in game
+      this.socket.emit('Init', {
+        'uid': uid
+      });
+      // returns to lobby if not in game
+      this.socket.onEvent('NotInGame', ()=>{
+        this.router.navigate(['/lobby']);
+      });
+
       this.socket.onEvent('GetBid', (data)=>{
         this.face=this.prevFace;
         this.quantity=this.prevQuantity;
@@ -44,6 +54,10 @@ export class GameComponent implements OnInit {
       this.socket.onEvent('Draft',()=>{
         console.log('draft start')
         this.phase='draft'
+      });
+
+      this.socket.onEvent('PostPowers',(data)=>{
+        return console.log(data);
       });
   }
 

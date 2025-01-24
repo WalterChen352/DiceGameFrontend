@@ -3,7 +3,7 @@
 <div class="container">
 
 <div *ngFor="let die of dice">
-   <app-die [die]="die" [display]="display"></app-die>
+   <app-die [faceIndex]="die.faceIndex" [faces]="die.faces" [display]="display"></app-die>
 </div>
 </div>
 

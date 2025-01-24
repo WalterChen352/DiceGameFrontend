@@ -1,8 +1,7 @@
-import { Component, OnInit, QueryList, ViewChildren, Input } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren, Input, Output, EventEmitter, AfterViewChecked } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { SocketService } from '../socket.service';
 import { Router } from '@angular/router';
-import { Die } from '../interfaces/die.interface';
 import { DieComponent } from '../die/die.component';
 
 @Component({
@@ -10,36 +9,35 @@ import { DieComponent } from '../die/die.component';
   templateUrl: './diceContainer.component.html',
   styleUrls: ['./diceContainer.component.css']
 })
-export class DiceContainerComponent implements OnInit {
-  @Input() dice: Die[] = [];
+export class DiceContainerComponent implements OnInit, AfterViewChecked {
+  @Input() dice: DieComponent[] = [];
   @Input() prompted = false;
   @Input() maxSelections = 0;
   @Input() prompt=''
   @Input() res=''
   @Input() pid: string|null=''
-
+  @Output() dieSelected= new EventEmitter<any>();
+  @Output() selectPlayerEmitter = new EventEmitter<string|null>();
+  private viewInitialized = false;
+  @Input() playerSelected:boolean=false;
   @ViewChildren(DieComponent) dieComponents!: QueryList<DieComponent>;
 
-  constructor(private authService: AuthService, private router: Router, private socket: SocketService) {}
+  constructor( private socket: SocketService) {}
 
-  ngOnInit(): void {
-    console.log('this is my pid' + this.pid)
-    // console.log(this.dice)
-    // this.socket.onEvent('DiceRolls', (data) => {
-    //   console.log(data)
-    //   this.dice = data['dice'];
-    //   console.log('this is normal container dice', this.dice)
-    // });
-    // this.socket.onEvent('LoseDie', (msg)=>{
-    //   this.res='LoseDie'
-    //   this.prompted=true;
-    //   this.prompt=msg;
-    //   this.maxSelections=1;
-    // })
-    // this.socket.onEvent('LoseDieAck',()=>{
-    //   this.prompted=false;
-    //   this.maxSelections=0;
-    // })
+  ngOnInit() {
+    console.log('Initial dieComponents', this.dieComponents);
+  }
+  ngAfterViewChecked() {
+    if (!this.viewInitialized && this.dieComponents && this.dieComponents.length > 0) {
+      this.viewInitialized = true;
+      console.log('Die components initialized', this.dieComponents.length);
+    }
+  }
+  ngAfterViewInit() {
+    console.log('AfterViewInit dieComponents', this.dieComponents);
+    this.dieComponents.changes.subscribe(changes => {
+      console.log('DieComponents changes', changes);
+    });
   }
 
   submitDice(): void {
@@ -64,18 +62,63 @@ export class DiceContainerComponent implements OnInit {
     }
   }
 
-  selectDice(index: number): void {
-    const dieComponent = this.dieComponents.toArray()[index];
-    const selectedCount = this.dieComponents.filter(die => die.selected).length;
+  setDice(data:any):void{
+    console.log(data)
+    this.dice=[];
+    data.forEach((die:any)=>{
+      let d = new DieComponent();
+      d.setFaceIndex(die.faceIndex);
+      d.setFaces(die.faces);
+      this.dice.push(d);
+    })
+    console.log(this.dice);
+    console.log(this.dice[0].constructor.name);
+  }
 
-    if (dieComponent.selected) {
-      dieComponent.setSelected(false);
-    } else if (selectedCount < this.maxSelections) {
+  selectDice(index: number): void {
+    // const dieComponent = this.dieComponents.toArray()[index];
+    // const selectedCount = this.dieComponents.filter(die => die.selected).length;
+
+    // if (dieComponent.selected) {
+    //   dieComponent.setSelected(false);
+    // } else if (selectedCount < this.maxSelections) {
+    //   dieComponent.setSelected(true);
+    // } else {
+    //   console.log(`Maximum of ${this.maxSelections} dice can be selected.`);
+    // }
+    this.dieSelected.emit({
+      'index':index,
+      'player': this.pid
+    })
+  }
+
+  getUserDisplay(): string|null {
+    const uid = localStorage.getItem('user');
+    //console.log(uid, this.pid);
+    return this.pid === uid ? 'You' : this.pid;
+  }
+
+  emitPlayer():void{
+    console.log('emitting');
+    this.selectPlayerEmitter.emit(this.pid);
+  }
+
+  select(index: number): void {
+    if (this.dieComponents?.length > 0) {
+      const dieComponent = this.dieComponents.toArray()[index];
       dieComponent.setSelected(true);
     } else {
-      console.log(`Maximum of ${this.maxSelections} dice can be selected.`);
+      console.error('No die components found');
     }
   }
+
+  selectPlayer():void{
+    console.log('PlayerSelected');
+    console.log(this.playerSelected);
+    this.playerSelected=!this.playerSelected;
+    console.log(this.playerSelected);
+  }
+  
 
   unselectAllDice() :void{
     this.dieComponents.map(die=>die.setSelected(false));

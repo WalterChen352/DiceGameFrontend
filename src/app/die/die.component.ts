@@ -8,8 +8,10 @@ import {Die} from '../interfaces/die.interface'
   styleUrls: ['./die.component.css']
 })
 export class DieComponent  implements OnInit{
-  @Input() die:Die ={} as Die;
-  selected: boolean=false;
+  //@Input() die:any;
+  @Input() faceIndex: number|null=null;
+  @Input() faces:any=[];
+  @Input()selected: boolean=false;
   hover:boolean=false;
   @Input() display:boolean=false;
   ngOnInit(): void {
@@ -30,5 +32,14 @@ export class DieComponent  implements OnInit{
   hideFaces():void{
     this.hover=false;
   }
+
+  setFaces(faces:any):void{
+      this.faces=faces;
+  }
+
+  setFaceIndex(index:number):void{
+    this.faceIndex=index;
+  }
+  
   
 }
