@@ -3,11 +3,11 @@
   <button (click)="prev()">&#10094;</button>
   <div class="carousel">
       <!-- <app-oppDiceContainer *ngIf="currPlayer() === false" [dice]="players[currentIndex].dice" [pid]="players[currentIndex].pid"></app-oppDiceContainer> -->
-      <app-diceContainer  [dice]="players[currentIndex]?.dice || []" [prompted]="prompted" [maxSelections]="maxSelections" [prompt] ="prompt" [res]="res" [pid]="players[currentIndex]?.pid||''" (dieSelected)="selectDie($event)" (selectPlayerEmitter)=selectPlayer($event) [playerSelected]="players[currentIndex].playerSelected"></app-diceContainer>
+      <app-diceContainer  [dice]="players[currentIndex]?.dice || []" [prompted]="prompted" [maxSelections]="maxSelections" [prompt] ="prompt" [res]="res" [pid]="players[currentIndex]?.pid||''" (dieSelected)="selectDie($event)" (selectPlayerEmitter)=selectPlayer($event) [playerSelected]="players[currentIndex].playerSelected" (selectFaceEmitter)="selectFace($event)"></app-diceContainer>
   </div>
   <button (click)="next()">&#10095;</button>
 </div>
-<div *ngIf="this.prompted">
+<div *ngIf="true">
   <button (click)="submit()">Submit</button>
   <button (click)="unselectAll()">Clear</button>
 </div>

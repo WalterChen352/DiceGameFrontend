@@ -1,11 +1,10 @@
 <div (mouseleave)="hideFaces()">
-    <div [class.selected]="selected"  (mouseenter)="displayFaces()" class="face faceUp" *ngIf="!display">
-        {{faceIndex!==null ? faces[faceIndex].value : "?"}}
+    <div [class.selected]="selected" (mouseenter)="displayFaces()" (click)="selectFaceUp()" class="face faceUp" *ngIf="!display">
+      {{faceIndex!==null ? faces[faceIndex].value : "?"}}
     </div>
-    <div *ngIf="hover || display">
-        <div *ngFor="let face of faces; let i = index" [ngClass]="{'face' : true, 'faceUpIndex': i ===faceIndex}">
-            {{face.value}}
-        </div>
+    <div *ngIf="hover||display">
+      <div *ngFor="let face of faces; let i = index" [ngClass]="{'face' : true, 'faceUpIndex': i ===faceIndex, 'selected':selected, 'faceSelected':face.selected}" (click)="selectFace(i)">
+        {{face.value}}
+      </div>
     </div>
-</div>
-
+  </div>

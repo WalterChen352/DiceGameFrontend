@@ -1,5 +1,5 @@
 // die.component.ts
-import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, Input, OnInit, input } from '@angular/core';
 import {Die} from '../interfaces/die.interface'
 
 @Component({
@@ -11,14 +11,18 @@ export class DieComponent  implements OnInit{
   //@Input() die:any;
   @Input() faceIndex: number|null=null;
   @Input() faces:any=[];
-  @Input()selected: boolean=false;
+  @Input()selected: boolean|undefined=false;
   hover:boolean=false;
   @Input() display:boolean=false;
+  @Input() index:number=0;
+  @Output() selectedFace=new EventEmitter<any>();
+
   ngOnInit(): void {
   }
 
-  toggleSelect():void{
+  toggleSelect():boolean{
     this.selected=!this.selected;
+    return this.selected;
   }
 
   setSelected(selected: boolean): void {
@@ -41,5 +45,29 @@ export class DieComponent  implements OnInit{
     this.faceIndex=index;
   }
   
-  
+  selectFaceUp():void{
+    console.log('selecting face up in die component');
+    this.selectedFace.emit({
+      'faceIndex': this.faceIndex,
+      'dieIndex': this.index
+    });
+  }
+  selectFace(faceIndex:number):void{
+    console.log('selecting face in die component');
+    if(this.faceIndex !== null){
+      this.selectedFace.emit({
+        'faceIndex': faceIndex,
+        'dieIndex': this.index
+      });
+    }
+    
+  }
+
+  toggleFaceSelect(index:number):boolean{
+    console.log('settingFaceSElect')
+    this.faces[index].selected=!this.faces[index].selected;
+    return this.faces[index].selected;
+  }
 }
+
+console.log('miri was here :3')

@@ -17,3 +17,7 @@
 .faceUpIndex{
     border-color: gold
 }
+
+.faceSelected{
+    color: lime;
+}

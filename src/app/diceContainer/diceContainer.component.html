@@ -1,12 +1,12 @@
 <h2 *ngIf="this.prompted">{{prompt}}</h2>
 
-<div (click)="emitPlayer(); $event.stopPropagation()" >
+<div (click)="emitPlayer()" >
   <h3 [class.playerSelected]='this.playerSelected'>{{getUserDisplay()}}</h3>
 </div>
 
 <div class="container">
 <div *ngFor="let die of dice; let i = index" (click)="selectDice(i)">
-  <app-die [faces]="die.faces" [faceIndex]="die.faceIndex" [selected]="die.selected" ></app-die>
+  <app-die [faces]="die.faces" [faceIndex]="die.faceIndex" [selected]="die?.selected" [index]="i" (selectedFace)="selectFace($event)"></app-die>
 </div>
 </div>
 

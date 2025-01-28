@@ -18,6 +18,7 @@ export class DiceContainerComponent implements OnInit, AfterViewChecked {
   @Input() pid: string|null=''
   @Output() dieSelected= new EventEmitter<any>();
   @Output() selectPlayerEmitter = new EventEmitter<string|null>();
+  @Output() selectFaceEmitter = new EventEmitter<any>();
   private viewInitialized = false;
   @Input() playerSelected:boolean=false;
   @ViewChildren(DieComponent) dieComponents!: QueryList<DieComponent>;
@@ -112,15 +113,22 @@ export class DiceContainerComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  selectPlayer():void{
+  toggleSelectPlayer():boolean{
     console.log('PlayerSelected');
     console.log(this.playerSelected);
     this.playerSelected=!this.playerSelected;
     console.log(this.playerSelected);
+    return this.playerSelected;
   }
   
 
   unselectAllDice() :void{
     this.dieComponents.map(die=>die.setSelected(false));
+  }
+
+  selectFace(data:any):void{
+    console.log('selecting face in dice container', data);
+    data['pid']=this.pid;
+    this.selectFaceEmitter.emit(data);
   }
 }
