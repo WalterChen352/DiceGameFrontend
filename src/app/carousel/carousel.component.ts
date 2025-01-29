@@ -17,6 +17,7 @@ export class CarouselComponent implements OnInit {
   prompted:boolean =false;
   targetType:string='';
   dieType:string='';
+  faceType:string='';
   maxSelections:number=0;
   minSelections:number=0;
   prompt:string=''
@@ -26,6 +27,7 @@ export class CarouselComponent implements OnInit {
   promptQueue:any[]=[]
   promptResponses:any[]=[]
   promptIndex:number=0;
+  promptEvent:string='';
 
   constructor(private socket: SocketService){}
 
@@ -48,24 +50,29 @@ export class CarouselComponent implements OnInit {
           console.log('receiving player diceinfo')
           console.log(data)
           this.players=[]
-          data.forEach(player => {
-            let p = new DiceContainerComponent(this.socket);
-            let dice:DieComponent[]=[];
-            // player.dice.forEach((die)=>{
-            //   dice.push(new DieComponent(die['faces'], die['faceIndex']));
-            // })
-            console.log(p.constructor.name)
-            p.setDice(player.dice);
-            console.log(p.dice)
-            p.pid= player.pid
-            this.players.push(p);
-          });
+          if(this.players.length===0){
+            data.forEach(player => {
+              let p = new DiceContainerComponent(this.socket);
+              let dice:DieComponent[]=[];
+              console.log(p.constructor.name)
+              p.setDice(player.dice);
+              console.log(p.dice)
+              p.pid= player.pid
+              this.players.push(p);
+            });
+          }
+          else{
+            data.forEach((player, index)=>{
+              //this.players[index].setDice(player['dice']['dice']);
+              console.log(player, index);
+            })
+          }
           console.log(this.players);
         });
       this.socket.onEvent('DiceRolls', (data)=>{
-        console.log(localStorage.getItem('user'))
+        //console.log(localStorage.getItem('user'))
         let user =this.players.find(player=>{
-          return player.pid === localStorage.getItem('user');
+          return player.pid === data['pid'];
         })
         this.players.forEach(player=>console.log(player.pid))
         if(user){
@@ -86,16 +93,21 @@ export class CarouselComponent implements OnInit {
         this.prompted=false;
         this.maxSelections=0;
       })
-      this.socket.onEvent('Prompt', (prompts)=>{
+      this.socket.onEvent('Prompt', (data)=>{
+        console.log(data);
+        this.promptEvent=data['promptEvent'];
+        const prompts = data['prompts'];
+        console.log(prompts);
         this.prompted=true;
         this.promptIndex=0;
         prompts.forEach((prompt:any)=>{
-          let p:any;
+          let p:any = new Object();
           p.prompt=prompt['prompt'];
           p.minSelections=prompt['minSelections'];
           p.maxSelections=prompt['maxSelections'];
           p.targetType=prompt['targetType'];
           p.dieType=prompt['dieType'];
+          p.faceType=prompt['faceType'];
           this.promptQueue.push(p);
         });
         this.nextPrompt();
@@ -111,7 +123,7 @@ export class CarouselComponent implements OnInit {
     const pid=data['player'];
     const dieIndex=data['index'];
     let index=-1;
-    if(this.prompted && this.targetType==='die'){
+    if(this.prompted && this.targetType==='die' ){
       console.log('selected die ' + data['index'] +' from '+ data['player']);
       const player = this.players.find((p, i)=>{
         if(p.pid===pid){
@@ -124,7 +136,10 @@ export class CarouselComponent implements OnInit {
       if(player){
         console.log(player.constructor.name);
         let die = player.dice[data['index']];
-        if(die.toggleSelect()){
+        if(!die.selected &&this.selections.length>= this.maxSelections){
+          return;
+        }
+        if(die.toggleSelect() ){
           this.selections.push([index, dieIndex]);
         }
         else{
@@ -139,27 +154,33 @@ export class CarouselComponent implements OnInit {
   }
 
   selectPlayer(pid:string|null){
-    console.log('carousel selecting')
-    let index:number=-1;
-    if(pid){
-      console.log('selecting '+ pid);
-      console.log(this.players);
-      let player= this.players.find((p, i)=>{
-        if(p.pid===pid){
-          index = i;
-          return true;
+    console.log('carousel selecting player');
+    if(this.prompted && this.targetType==='player')
+    {
+      let index:number=-1;
+      if(pid){
+        console.log('selecting '+ pid);
+        console.log(this.players);
+        let player= this.players.find((p, i)=>{
+          if(p.pid===pid){
+            index = i;
+            return true;
+          }
+          return false;
+        })
+        console.log(player);
+        if(!player?.playerSelected &&this.selections.length>= this.maxSelections){
+          return;
         }
-        return false;
-      })
-      console.log(player);
-      if(player?.toggleSelectPlayer()){
-        this.selections.push([index]);
+        if(player?.toggleSelectPlayer()){
+          this.selections.push([index]);
+        }
+        else{
+          this.selections=this.selections.filter((selection:any)=>selection !== index)
+        }
+        
+        console.log('new selections are now ', this.selections);
       }
-      else{
-        this.selections=this.selections.filter((selection:any)=>selection !== index)
-      }
-      
-      console.log('new selections are now ', this.selections);
     }
   }
 
@@ -192,14 +213,12 @@ export class CarouselComponent implements OnInit {
 
   submit():void{
     //submitting
+    
     if (this.maxSelections<= this.selections.length && this.selections.length >= this.minSelections){
         this.promptResponses.push(this.selections);
         console.log('submitting ', this.selections, this.promptResponses);
-        this.selections=[];
         this.nextPrompt();
-    }
-    else{
-      console.warn('not enough targets')
+        this.unselectAll();
     }
     
 }
@@ -211,6 +230,7 @@ export class CarouselComponent implements OnInit {
   }
 
   nextPrompt():void{
+    this.unselectAll();
     if(this.promptIndex< this.promptQueue.length){
       const i=this.promptIndex;
       const p = this.promptQueue[i];
@@ -219,37 +239,51 @@ export class CarouselComponent implements OnInit {
       this.maxSelections=p.maxSelections;
       this.targetType=p.targetType;
       this.dieType=p.dieType;
+      this.faceType=p.faceType;
       this.promptIndex++;
+      console.log('prompt is', this.prompt, this.minSelections, this.maxSelections, this.targetType, this.dieType, this.faceType)
     }
     else{
-      console.warn('calling next prompt at end of prompt queue');
+      console.log('end of prompt queue', this.promptResponses);
+      this.prompted=false;
+      this.socket.emit('PromptResponse',{
+        'uid' : localStorage.getItem('user'),
+        'event' : this.promptEvent,
+        'selections':this.promptResponses
+      })
     }
   }
 
   selectFace(data:any):void{
-    console.log('carousel has received face selection', data);
-    const pid = data['pid'];
-    const faceIndex= data['faceIndex'];
-    const dieIndex= data['dieIndex'];
-    let index=-1;
-    let player= this.players.find((p, i)=>{
-        if(p.pid===pid){
-          index = i;
-          return true;
+    if(this.prompted && this.targetType=='face' )
+    {
+      console.log('carousel has received face selection', data);
+      const pid = data['pid'];
+      const faceIndex= data['faceIndex'];
+      const dieIndex= data['dieIndex'];
+      let index=-1;
+      let player= this.players.find((p, i)=>{
+          if(p.pid===pid){
+            index = i;
+            return true;
+          }
+          return false;
+        });
+      console.log(player);
+      if(player){
+        if(!player.dice[dieIndex].isFaceSelected(faceIndex) &&this.selections.length>= this.maxSelections){
+          return;
         }
-        return false;
-      });
-    console.log(player);
-    if(player){
-      if(player.dice[dieIndex].toggleFaceSelect(faceIndex)){
-        this.selections.push([index, dieIndex, faceIndex]);
+        if(player.dice[dieIndex].toggleFaceSelect(faceIndex)){
+          this.selections.push([index, dieIndex, faceIndex]);
+        }
+        else{
+          this.selections=this.selections.filter((selection:any)=>{
+            return !(selection[0]===index && selection[1]===dieIndex && selection[2]===faceIndex); 
+          })
+        }
+        console.log('face selecitons', this.selections);
       }
-      else{
-        this.selections=this.selections.filter((selection:any)=>{
-          return !(selection[0]===index && selection[1]===dieIndex && selection[2]===faceIndex); 
-        })
-      }
-      console.log('face selecitons', this.selections);
     }
   }
 }

@@ -68,6 +68,11 @@ export class DieComponent  implements OnInit{
     this.faces[index].selected=!this.faces[index].selected;
     return this.faces[index].selected;
   }
+
+  isFaceSelected(index:number):boolean{
+    return this.faces[index].selected
+  }
+
 }
 
 console.log('miri was here :3')
