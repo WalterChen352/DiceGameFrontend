@@ -28,6 +28,7 @@ export class CarouselComponent implements OnInit {
   promptResponses:any[]=[]
   promptIndex:number=0;
   promptEvent:string='';
+  onlyOwnDice:boolean=true;
 
   constructor(private socket: SocketService){}
 
@@ -78,6 +79,7 @@ export class CarouselComponent implements OnInit {
         if(user){
           console.log(data['dice'], 'this is setting dice rolls')
           user.setDice(data['dice'])
+
         }
         else{
           console.log('error, user not found')
@@ -100,6 +102,7 @@ export class CarouselComponent implements OnInit {
         console.log(prompts);
         this.prompted=true;
         this.promptIndex=0;
+        
         prompts.forEach((prompt:any)=>{
           let p:any = new Object();
           p.prompt=prompt['prompt'];
@@ -108,6 +111,7 @@ export class CarouselComponent implements OnInit {
           p.targetType=prompt['targetType'];
           p.dieType=prompt['dieType'];
           p.faceType=prompt['faceType'];
+          p.onlyOwnDice=prompt['onlyOwnDice'];
           this.promptQueue.push(p);
         });
         this.nextPrompt();
@@ -123,7 +127,7 @@ export class CarouselComponent implements OnInit {
     const pid=data['player'];
     const dieIndex=data['index'];
     let index=-1;
-    if(this.prompted && this.targetType==='die' ){
+    if(this.prompted && this.targetType==='die'){
       console.log('selected die ' + data['index'] +' from '+ data['player']);
       const player = this.players.find((p, i)=>{
         if(p.pid===pid){
@@ -133,9 +137,18 @@ export class CarouselComponent implements OnInit {
         return false;
       });
       console.log(player);
+      if(this.onlyOwnDice && player?.pid !== localStorage.getItem('user')){
+        window.alert('must select own die');
+        return;
+      }
       if(player){
         console.log(player.constructor.name);
         let die = player.dice[data['index']];
+        console.log(this.dieType.length);
+        if(this.dieType!== '' &&die.name !== this.dieType){
+            window.alert('must select a die of type '+ this.dieType);
+            return
+        }
         if(!die.selected &&this.selections.length>= this.maxSelections){
           return;
         }
@@ -245,12 +258,18 @@ export class CarouselComponent implements OnInit {
     }
     else{
       console.log('end of prompt queue', this.promptResponses);
-      this.prompted=false;
-      this.socket.emit('PromptResponse',{
+      const data={
         'uid' : localStorage.getItem('user'),
         'event' : this.promptEvent,
         'selections':this.promptResponses
-      })
+      }
+      console.log('submitting promptresponse to server' ,data)
+      this.socket.emit('PromptResponse',data)
+      //cleanup and reset
+      this.promptQueue=[];
+      this.promptResponses=[];
+      this.prompted=false;
+      this.promptIndex=0;
     }
   }
 

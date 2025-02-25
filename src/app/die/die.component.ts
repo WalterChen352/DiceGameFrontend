@@ -2,6 +2,7 @@
 import { Component, EventEmitter, Output, Input, OnInit, input } from '@angular/core';
 import {Die} from '../interfaces/die.interface'
 
+
 @Component({
   selector: 'app-die',
   templateUrl: './die.component.html',
@@ -15,7 +16,9 @@ export class DieComponent  implements OnInit{
   hover:boolean=false;
   @Input() display:boolean=false;
   @Input() index:number=0;
+  @Input() frozen:boolean=false;
   @Output() selectedFace=new EventEmitter<any>();
+  name:string=''
 
   ngOnInit(): void {
   }
@@ -39,6 +42,11 @@ export class DieComponent  implements OnInit{
 
   setFaces(faces:any):void{
       this.faces=faces;
+  }
+  setName(name:any):void{
+    
+    this.name=name;
+    console.log('setting name', this.name)
   }
 
   setFaceIndex(index:number):void{
@@ -71,6 +79,17 @@ export class DieComponent  implements OnInit{
 
   isFaceSelected(index:number):boolean{
     return this.faces[index].selected
+  }
+
+  setFrozen(frozen:boolean):void{
+    this.frozen=frozen;
+    if(this.frozen){
+      console.log('frozen die', this.index)
+    }
+
+  }
+  logNgClass(classes: any): void {
+    console.log('ngClass:', classes);
   }
 
 }

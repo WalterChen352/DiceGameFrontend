@@ -1,5 +1,5 @@
 <div (mouseleave)="hideFaces()">
-    <div [class.selected]="selected" (mouseenter)="displayFaces()" (click)="selectFaceUp()" class="face faceUp" *ngIf="!display">
+    <div  (mouseenter)="displayFaces()" (click)="selectFaceUp()" class="face faceUp" *ngIf="!display"  [ngClass]="{'faceSelected':faceIndex? faces[faceIndex].selected: false, 'frozen': frozen, 'selected': selected }">
       {{faceIndex!==null ? faces[faceIndex].value : "?"}}
     </div>
     <div *ngIf="hover||display">

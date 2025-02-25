@@ -70,6 +70,8 @@ export class DiceContainerComponent implements OnInit, AfterViewChecked {
       let d = new DieComponent();
       d.setFaceIndex(die.faceIndex);
       d.setFaces(die.faces);
+      d.setName(die.name);
+      d.setFrozen(die.frozen);
       this.dice.push(d);
     })
     console.log(this.dice);

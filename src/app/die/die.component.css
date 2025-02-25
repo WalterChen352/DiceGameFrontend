@@ -21,3 +21,8 @@
 .faceSelected{
     color: lime;
 }
+
+.frozen{
+    background: rgb(2,0,36);
+    background: linear-gradient(192deg, rgba(2,0,36,1) 0%, rgba(224,224,231,1) 0%, rgba(86,192,213,1) 92%);
+}
